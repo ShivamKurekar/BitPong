@@ -1,0 +1,3 @@
+[submodule "rtl/hdmi"]
+	path = rtl/hdmi
+	url = git@github.com:ShivamKurekar/hdmi_tang60k.git
