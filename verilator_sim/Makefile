@@ -1,12 +1,14 @@
-RTL_INC = -I../rtl
-TIMING  = ../rtl/hdmi/src/rtl/video-misc/video_timing_ctrl.v
-BOUND   = ../rtl/BitPong/test_bound_pattern.v
-PATTERN = ../rtl/hdmi/src/rtl/video-misc/test_pattern_gen.v
+RTL_INC  = -I../rtl
+WALLS = ../rtl/BitPong/bitpong_walls.v
+TIMING   = ../rtl/hdmi/src/rtl/video-misc/video_timing_ctrl.v
+BOUND    = ../rtl/BitPong/test_bound_pattern.v
+PATTERN  = ../rtl/hdmi/src/rtl/video-misc/test_pattern_gen.v
+TEXT     = ../rtl/BitPong/bitpong_graphics.v
 
-CFLAGS  = -CFLAGS "$(shell sdl2-config --cflags)"
-LFLAGS  = -LDFLAGS "$(shell sdl2-config --libs)"
+CFLAGS   = -CFLAGS  "$(shell sdl2-config --cflags)"
+LFLAGS   = -LDFLAGS "$(shell sdl2-config --libs)"
 
-# ── top_bound target ────────────────────────────────────────────
+# ── top_bound ────────────────────────────────────────────────────
 sim_bound: obj_dir_bound/top_bound_sim
 	./obj_dir_bound/top_bound_sim
 
@@ -19,7 +21,7 @@ obj_dir_bound/top_bound_sim: top_bound_sim.sv $(TIMING) $(BOUND) main_bound.cpp
 	    $(CFLAGS) $(LFLAGS)
 	make -C obj_dir_bound -f Vtop_bound_sim.mk
 
-# ── top_mod target ───────────────────────────────────────────────
+# ── top_mod ──────────────────────────────────────────────────────
 sim_mod: obj_dir_mod/top_mod_sim
 	./obj_dir_mod/top_mod_sim
 
@@ -33,5 +35,19 @@ obj_dir_mod/top_mod_sim: top_mod_sim.sv $(TIMING) $(PATTERN) main_mod.cpp
 	    $(CFLAGS) $(LFLAGS)
 	make -C obj_dir_mod -f Vtop_mod_sim.mk
 
+# ── top_text ─────────────────────────────────────────────────────
+sim_text: obj_dir_text/top_text_sim
+	./obj_dir_text/top_text_sim
+
+obj_dir_text/top_text_sim: top_text_sim.sv $(TIMING) $(TEXT) $(FONT_ROM) main_text.cpp
+	verilator $(RTL_INC) -cc top_text_sim.sv \
+	    $(TIMING) $(TEXT) $(WALLS) \
+	    --exe main_text.cpp \
+	    -Mdir obj_dir_text \
+	    -o top_text_sim \
+	    $(CFLAGS) $(LFLAGS)
+	make -C obj_dir_text -f Vtop_text_sim.mk
+
+# ── clean ────────────────────────────────────────────────────────
 clean:
-	rm -rf obj_dir_bound obj_dir_mod
+	rm -rf obj_dir_bound obj_dir_mod obj_dir_text
