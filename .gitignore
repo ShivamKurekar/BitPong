@@ -1,2 +1,2 @@
 impl
-verilator_sim/obj_dir/
+verilator_sim/obj_dir*
