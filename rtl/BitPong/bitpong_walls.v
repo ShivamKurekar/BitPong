@@ -17,7 +17,6 @@ reg r_cntr_line;
 reg [23:0] r_pixel;
 
 always @(*) begin
-
     r_cntr_line = 1'b0;
     r_wall_en = 1'b0;
     r_pixel = 24'h00_00_00;
@@ -26,13 +25,13 @@ always @(*) begin
         || (i_pixel_x < BOUND_WIDTH) || (i_pixel_x >= (MAX_H - BOUND_WIDTH))) begin
         r_wall_en = 1'b1;
         r_cntr_line = 1'b0;
-        r_pixel = 24'h00_FF_FF;
+        r_pixel = 24'h40_FF_FF;
     end else if ((i_pixel_x >= (MAX_H/2 - LINE_WIDTH/2)) &&
         (i_pixel_x <  (MAX_H/2 + LINE_WIDTH/2)) &&
         (i_pixel_y[5:4] != 2'b11)) begin
         
         r_cntr_line = 1'b1;
-        r_pixel = 24'h80_FF_FF; 
+        r_pixel = 24'h60_C0_C0;
     end
 end
 
