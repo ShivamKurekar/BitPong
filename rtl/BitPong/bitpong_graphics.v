@@ -29,9 +29,26 @@ bitpong_walls walls (
     .o_pixel(w_wall_pixel)
 );
 
+wire w_score_on;
+wire [23:0] w_score_rgb;
+
+bitpong_text text (
+    .i_clk(i_clk),
+    .i_pix_x(i_pixel_x),
+    .i_pix_y(i_pixel_y),
+    .i_score_l_tens(4'd0),
+    .i_score_l_ones(4'd0),
+    .i_score_r_tens(4'd0),
+    .i_score_r_ones(4'd0),
+    .o_text_on(w_score_on),
+    .o_rgb(w_score_rgb)
+);
+
 always @(*) begin
     if(i_den) begin
-        if(w_wall_en || w_cntr_line)
+        if (w_score_on)
+            r_pixel = w_score_rgb;
+        else if(w_wall_en || w_cntr_line)
             r_pixel = w_wall_pixel;
         else
             r_pixel = 24'h00_00_00;
