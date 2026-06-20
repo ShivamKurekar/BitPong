@@ -9,56 +9,93 @@ module bitpong_text (
     input [3:0]  i_score_r_tens,
     input [3:0]  i_score_r_ones,
 
-    output        o_text_on,
+    output       o_text_on,
     output [23:0] o_rgb
 );
 
-reg [23:0] r_rgb;
+localparam            SCALE   = 8;
+localparam            FONT_W  = 8;
+localparam            FONT_H  = 16;
+localparam [13:0]     CHAR_W  = FONT_W * SCALE;   // 64
+localparam [13:0]     CHAR_H  = FONT_H * SCALE;   // 128
 
-reg [10:0] rom_addr;
-reg [7:0] font_word;
-wire font_bit;
+localparam [13:0] Y_TOP     = 14'd40;
+localparam [13:0] X_L_TENS  = 14'd416;             // 480 - CHAR_W
+localparam [13:0] X_L_ONES  = X_L_TENS + CHAR_W;   // 480
+localparam [13:0] X_R_TENS  = 14'd1376;            // 1440 - CHAR_W
+localparam [13:0] X_R_ONES  = X_R_TENS + CHAR_W;   // 1440
 
-ascii_rom rom(
-    .clk(i_clk),
-    .addr(rom_addr),
-    .o_data(font_word)
-);
+localparam [23:0] TEXT_COLOR = 24'h80_FF_FF;       // white digits
 
-wire logo_on;
-wire [3:0] row_addr_l;
-wire [2:0] bit_addr_l;
-reg [6:0] char_addr_l;
+wire in_l_tens = (i_pix_x >= X_L_TENS) && (i_pix_x < X_L_TENS + CHAR_W) &&
+                 (i_pix_y >= Y_TOP)    && (i_pix_y < Y_TOP + CHAR_H);
+wire in_l_ones = (i_pix_x >= X_L_ONES) && (i_pix_x < X_L_ONES + CHAR_W) &&
+                 (i_pix_y >= Y_TOP)    && (i_pix_y < Y_TOP + CHAR_H);
+wire in_r_tens = (i_pix_x >= X_R_TENS) && (i_pix_x < X_R_TENS + CHAR_W) &&
+                 (i_pix_y >= Y_TOP)    && (i_pix_y < Y_TOP + CHAR_H);
+wire in_r_ones = (i_pix_x >= X_R_ONES) && (i_pix_x < X_R_ONES + CHAR_W) &&
+                 (i_pix_y >= Y_TOP)    && (i_pix_y < Y_TOP + CHAR_H);
 
-wire [10:0] logo_x;
-wire [10:0] logo_y;
+wire cell_active = in_l_tens | in_l_ones | in_r_tens | in_r_ones;
 
-assign logo_x = i_pix_x[10:0] - 11'd832;
-assign logo_y = i_pix_y[10:0] - 11'd476;
-
-assign logo_on = (logo_x < 256) && (logo_y < 128);
-
-assign row_addr_l = logo_y[6:3];
-assign bit_addr_l = logo_x[5:3];
-
+reg [3:0] digit_val;
 always @(*) begin
-    case (logo_x[8:6])
-        3'd0: char_addr_l = 7'h50; // P
-        3'd1: char_addr_l = 7'h4f; // O
-        3'd2: char_addr_l = 7'h4e; // N
-        3'd3: char_addr_l = 7'h47; // G
-        default: char_addr_l = 7'h00; // space
+    case (1'b1)
+        in_l_tens: digit_val = i_score_l_tens;
+        in_l_ones: digit_val = i_score_l_ones;
+        in_r_tens: digit_val = i_score_r_tens;
+        in_r_ones: digit_val = i_score_r_ones;
+        default:   digit_val = 4'h0;
     endcase
 end
 
+wire [6:0] ascii_code = 7'h30 + {3'b000, digit_val};  // '0'-'9' = 0x30-0x39
+
+reg [13:0] local_x;
 always @(*) begin
-    r_rgb = 24'h00_00_00;
-    if (font_bit)
-        r_rgb = 24'hFF_FF_00;
+    case (1'b1)
+        in_l_tens: local_x = i_pix_x - X_L_TENS;
+        in_l_ones: local_x = i_pix_x - X_L_ONES;
+        in_r_tens: local_x = i_pix_x - X_R_TENS;
+        in_r_ones: local_x = i_pix_x - X_R_ONES;
+        default:   local_x = 14'd0;
+    endcase
+end
+wire [13:0] local_y = i_pix_y - Y_TOP;   // valid only when cell_active
+
+// SCALE = 8 => divide-by-8 is a static slice, not a divider
+wire [2:0] font_col = local_x[5:3];   // 0..63  -> 0..7
+wire [3:0] font_row = local_y[6:3];   // 0..127 -> 0..15
+
+wire [10:0] rom_addr = {ascii_code, font_row};  // addr = ascii*16 + row
+wire [7:0] rom_data;
+
+ascii_rom u_ascii_rom (
+    .clk    (i_clk),
+    .addr   (rom_addr),
+    .o_data (rom_data)
+);
+
+reg       active_d1;
+reg [2:0] font_col_d1;
+
+always @(posedge i_clk) begin
+    active_d1   <= cell_active;
+    font_col_d1 <= font_col;
 end
 
-assign o_text_on = logo_on;
-assign rom_addr = {char_addr_l, row_addr_l};
-assign font_bit = font_word[~bit_addr_l];
-assign o_rgb = r_rgb;
+wire pixel_set    = rom_data[3'd7 - font_col_d1];
+wire text_on_next = active_d1 & pixel_set;
+
+reg        text_on_q;
+reg [23:0] rgb_q;
+
+always @(posedge i_clk) begin
+    text_on_q <= text_on_next;
+    rgb_q     <= text_on_next ? TEXT_COLOR : 24'h00_00_00;
+end
+
+assign o_text_on = text_on_q;
+assign o_rgb     = rgb_q;
+
 endmodule
