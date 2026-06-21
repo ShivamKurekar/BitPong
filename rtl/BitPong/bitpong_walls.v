@@ -29,7 +29,7 @@ always @(*) begin
         r_pixel = 24'h40_FF_FF;
     end else if ((i_pixel_x >= (MAX_H/2 - LINE_WIDTH/2)) &&
         (i_pixel_x <  (MAX_H/2 + LINE_WIDTH/2)) &&
-        (i_pixel_y[5:4] != 2'b11)) begin
+        (i_pixel_y[5:4] != 2'b11 && i_pixel_y > 14'd150)) begin
         // center line
         r_cntr_line = 1'b1;
         r_pixel = 24'h60_C0_C0;
