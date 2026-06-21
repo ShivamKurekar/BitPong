@@ -36,6 +36,7 @@ bitpong_text text (
     .i_clk(i_clk),
     .i_pix_x(i_pixel_x),
     .i_pix_y(i_pixel_y),
+    .i_balls(2'd0),
     .i_score_l_tens(4'd0),
     .i_score_l_ones(4'd0),
     .i_score_r_tens(4'd0),
