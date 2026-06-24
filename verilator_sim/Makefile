@@ -7,6 +7,9 @@ GRAPHICS = ../rtl/BitPong/bitpong_graphics.v
 TEXT	 = ../rtl/BitPong/bitpong_text.v
 FONT_ROM = ../rtl/BitPong/ascii_rom.v
 FONT_MEM = ../rtl/BitPong/font_8x16.mem
+ENGINE   = ../rtl/BitPong/bitpong_engine.v
+TIMER    = ../rtl/BitPong/bitpong_timer.v
+COUNTER  = ../rtl/BitPong/score_counter.v
 
 CFLAGS   = -CFLAGS  "$(shell sdl2-config --cflags)"
 LFLAGS   = -LDFLAGS "$(shell sdl2-config --libs)"
@@ -44,7 +47,7 @@ sim_text: obj_dir_text/top_text_sim
 
 obj_dir_text/top_text_sim: top_text_sim.sv $(TIMING) $(TEXT) $(FONT_ROM) main_text.cpp
 	verilator $(RTL_INC) -cc top_text_sim.sv \
-	    $(TIMING) $(GRAPHICS) $(TEXT) $(WALLS) $(FONT_ROM) \
+	    $(TIMING) $(GRAPHICS) $(TEXT) $(WALLS) $(FONT_ROM) $(ENGINE) $(TIMER) $(COUNTER)\
 	    --exe main_text.cpp \
 	    -Mdir obj_dir_text \
 	    -o top_text_sim \

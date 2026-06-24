@@ -5,10 +5,17 @@ module top_text_sim #(parameter CORDW=14) (
     input  wire logic        clk_pix,
     input  wire logic        sim_rst,
 
+    input  wire logic        reset_n,
+    input  wire logic        p1_up,
+    input  wire logic        p1_down,
+    input  wire logic        p2_up,
+    input  wire logic        p2_down,
+    input  wire logic        auto_play,
+
     output logic [CORDW-1:0] sdl_sx,
     output logic [CORDW-1:0] sdl_sy,
     output logic             sdl_de,
-    output logic             sdl_vsync,   // <-- added
+    output logic             sdl_vsync,
     output logic [7:0]       sdl_r,
     output logic [7:0]       sdl_g,
     output logic [7:0]       sdl_b
@@ -56,6 +63,12 @@ video_timing_ctrl #(
 
 bitpong_graphics graphics(
     .i_clk(clk_pix),
+    .i_reset_n(reset_n),
+    .p1_up(p1_up),
+    .p1_down(p1_down),
+    .p2_up(p2_up),
+    .p2_down(p2_down),
+    .auto_play(auto_play),
     .i_den(dvi_den),
     .i_pixel_x(pixel_x),
     .i_pixel_y(pixel_y),
