@@ -78,8 +78,8 @@ localparam [13:0] PROMPT_X0  = 14'd592;
 localparam [13:0] PROMPT_Y0  = 14'd420;              // bottom=484 < ball top=516
 localparam [13:0] PROMPT_W   = 23 * PR_CHAR_W;       // 736
 
-localparam [23:0] C_HUD    = 24'h80_FF_FF;  // cyan
-localparam [23:0] C_TITLE  = 24'hFF_E0_00;  // amber
+localparam [23:0] C_HUD    = 24'h00_FF_FF;  // cyan
+localparam [23:0] C_TITLE  = 24'h00_E5_FF;  // neon accent
 localparam [23:0] C_RULE   = 24'hC0_C0_C0;  // light grey
 localparam [23:0] C_PROMPT = 24'hFF_FF_60;  // yellow
 

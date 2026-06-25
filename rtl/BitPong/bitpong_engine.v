@@ -17,7 +17,7 @@ module bitpong_engine #(
 
 localparam [23:0] COLOR_BG     = 24'h00_00_00;
 localparam [23:0] COLOR_PADDLE = 24'hFF_FF_FF;
-localparam [23:0] COLOR_BALL   = 24'hFF_CC_00;
+localparam [23:0] COLOR_BALL   = 24'hFF_FF_FF;
 
 wire refr_tick;
 

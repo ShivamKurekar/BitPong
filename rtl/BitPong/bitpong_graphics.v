@@ -226,7 +226,7 @@ always @(*) begin
         else if(w_wall_en || (w_cntr_line && !w_hide_cntr))
             r_next_pixel = w_wall_pixel;
         else
-            r_next_pixel = 24'h00_00_00;
+            r_next_pixel = 24'h0A_0D_12;
     end else begin
         r_next_pixel = 24'h00_00_00;
     end
