@@ -30,6 +30,7 @@ Graphics will be divided into three parts
 wire w_cntr_line;
 wire w_wall_en;
 wire w_score_on;
+wire w_hide_cntr;   // suppresses centre line on splash screen
 wire graph_on;
 
 wire [23:0] w_wall_pixel;
@@ -67,23 +68,33 @@ bitpong_text text (
     .i_score_l_ones(dig0_l),
     .i_score_r_tens(dig1_r),
     .i_score_r_ones(dig0_r),
+    .i_state(state),          // overlay control
     .o_text_on(w_score_on),
-    .o_rgb(w_score_rgb)
+    .o_rgb(w_score_rgb),
+    .o_hide_cntr(w_hide_cntr)    // suppress dashed line during splash
 );
 
 wire hit_r;
 wire hit_l;
 wire miss;
+wire auto_play_togg;
+
+bitpong_button_toggle b_togg (
+    .clk(i_clk),
+    .rst_n(i_reset_n),
+    .btn_n(auto_play),
+    .toggle(auto_play_togg)
+);
 
 bitpong_engine physics (
     .clk(i_clk),
     .reset_n(i_reset_n),
     .btn1({p2_down, p2_up}),
     .btn2({p1_down, p1_up}),
-    .ai_switch(auto_play),
+    .ai_switch(auto_play_togg),
     .pix_x(i_pixel_x),
     .pix_y(i_pixel_y),
-    .gra_still(gra_still), // to pause game
+    .gra_still(gra_still),
 
     .hit_r(hit_r),
     .hit_l(hit_l),
@@ -166,7 +177,7 @@ always @(*) begin
             new_ball_count = 2'd3;
             d_clr = 1'b1; // clear both scores
 
-            if (p1_up || p1_down || p2_up || p2_down || auto_play) begin
+            if (p1_up || p1_down || p2_up || p2_down || auto_play_togg) begin
                 next_state = PLAY;
             end
         end 
@@ -212,7 +223,7 @@ always @(*) begin
             r_next_pixel = graph_rgb;
         else if (w_score_on)
             r_next_pixel = w_score_rgb;
-        else if(w_wall_en || w_cntr_line)
+        else if(w_wall_en || (w_cntr_line && !w_hide_cntr))
             r_next_pixel = w_wall_pixel;
         else
             r_next_pixel = 24'h00_00_00;
