@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
     bool key_p2_up   = false;
     bool key_p2_down = false;
 
-    bool key_auto    = false;
+    bool key_auto    = true;
 
     //------------------------------------------------------------------
     // Reset DUT
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
     dut->p1_down   = 0;
     dut->p2_up     = 0;
     dut->p2_down   = 0;
-    dut->auto_play = 0;
+    dut->auto_play = 1;
 
     for (int i = 0; i < 32; i++) {
         dut->clk_pix ^= 1;
@@ -211,13 +211,7 @@ int main(int argc, char* argv[])
                                     break;
 
                                 case SDLK_a:
-                                    key_auto = !key_auto;
-
-                                    printf(
-                                        "\nAUTO PLAY %s\n",
-                                        key_auto ? "ON" : "OFF"
-                                    );
-                                    fflush(stdout);
+                                    key_auto = false;
                                     break;
                             }
                         }
@@ -245,6 +239,10 @@ int main(int argc, char* argv[])
 
                             case SDLK_DOWN:
                                 key_p2_down = false;
+                                break;
+
+                            case SDLK_a:
+                                key_auto = true;
                                 break;
 
                             default:
