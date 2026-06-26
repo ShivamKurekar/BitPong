@@ -4,6 +4,11 @@ A hardware Pong game written entirely in Verilog, targeting **1920×1080 HDMI ou
 The game runs at native 1080p/60 Hz with no CPU, no OS, just synchronous RTL driving pixels straight to your monitor over a DVI/HDMI cable.
 
 ---
+<div align="center">
+
+![splash_screen](assets/splash_screen.png)
+
+</div>
 
 ## What it looks like in action
 
