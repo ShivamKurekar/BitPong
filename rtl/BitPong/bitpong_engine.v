@@ -52,8 +52,8 @@ reg  [10:0] ball_x_reg, ball_y_reg;
 wire [10:0] ball_x_next, ball_y_next;
 reg  [10:0] x_delta_reg, x_delta_next;
 reg  [10:0] y_delta_reg, y_delta_next;
-localparam BALL_V_P =  6;
-localparam BALL_V_N = -6;
+localparam BALL_V_P =  10;
+localparam BALL_V_N = -10;
 
 // LFSR
 reg [7:0] lfsr_reg;
