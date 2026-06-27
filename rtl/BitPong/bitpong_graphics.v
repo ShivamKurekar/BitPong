@@ -13,6 +13,7 @@ module bitpong_graphics (
 
     /* for one player mode */
     input auto_play,
+    output auto_play_togg,
 
     /* Pixel data */
     input [13:0] i_pixel_x,
@@ -77,7 +78,7 @@ bitpong_text text (
 wire hit_r;
 wire hit_l;
 wire miss;
-wire auto_play_togg;
+// wire auto_play_togg;
 
 bitpong_button_toggle b_togg (
     .clk(i_clk),
