@@ -5,6 +5,15 @@
     <Version>5</Version>
     <Device name="GW5AT-60B" pn="GW5AT-LV60PG484AC1/I0">gw5at60b-002</Device>
     <FileList>
+        <File path="rtl/BitPong/ascii_rom.v" type="file.verilog" enable="1"/>
+        <File path="rtl/BitPong/bitpong_button_toggle.v" type="file.verilog" enable="1"/>
+        <File path="rtl/BitPong/bitpong_engine.v" type="file.verilog" enable="1"/>
+        <File path="rtl/BitPong/bitpong_graphics.v" type="file.verilog" enable="1"/>
+        <File path="rtl/BitPong/bitpong_text.v" type="file.verilog" enable="1"/>
+        <File path="rtl/BitPong/bitpong_timer.v" type="file.verilog" enable="1"/>
+        <File path="rtl/BitPong/bitpong_top.v" type="file.verilog" enable="1"/>
+        <File path="rtl/BitPong/bitpong_walls.v" type="file.verilog" enable="1"/>
+        <File path="rtl/BitPong/score_counter.v" type="file.verilog" enable="1"/>
         <File path="rtl/BitPong/test_bound_pattern.v" type="file.verilog" enable="1"/>
         <File path="rtl/BitPong/top_bound.v" type="file.verilog" enable="1"/>
         <File path="rtl/hdmi/src/gowin_pll/gowin_pll.v" type="file.verilog" enable="1"/>
@@ -18,5 +27,7 @@
         <File path="rtl/hdmi/src/rtl/video-misc/test_pattern_gen.v" type="file.verilog" enable="1"/>
         <File path="rtl/hdmi/src/rtl/video-misc/video_timing_ctrl.v" type="file.verilog" enable="1"/>
         <File path="top_bound.cst" type="file.cst" enable="1"/>
+        <File path="src/BitPong.rao" type="file.gao" enable="1"/>
+        <File path="rtl/BitPong/font_8x16.mem" type="file.other" enable="1"/>
     </FileList>
 </Project>
